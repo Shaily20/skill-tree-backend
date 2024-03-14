@@ -137,6 +137,25 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <profiles>
+        <profile>
+            <id>local-build-profile</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <spotless.goal>apply</spotless.goal>
+            </properties>
+        </profile>
+        <profile>
+            <id>git-build-profile</id>
+            <properties>
+                <spotless.goal>check</spotless.goal>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
             <plugin>
@@ -151,6 +170,87 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <!--<plugin>
+                <groupId>com.hubspot.maven.plugins</groupId>
+                <artifactId>prettier-maven-plugin</artifactId>
+                <version>0.22</version>
+                <configuration>
+                    <printWidth>90</printWidth>
+                    <tabWidth>4</tabWidth>
+                    <useTabs>false</useTabs>
+                    <ignoreConfigFile>true</ignoreConfigFile>
+                    <ignoreEditorConfig>true</ignoreEditorConfig>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>-->
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>2.43.0</version>
+                <configuration>
+
+                    <java>
+                        <!-- These are the defaults, you can override if you want -->
+                        <includes>
+                            <include>src/main/java/**/*.java</include>
+                            <include>src/test/java/**/*.java</include>
+                        </includes>
+
+                        <!-- Cleanthat will refactor your code, but it may break your style: apply it before your formatter -->
+                        <!-- has its own section below -->
+
+                        <googleJavaFormat><!-- optional, 1.8 is minimum supported version -->
+                            <style>GOOGLE</style>                       <!-- or AOSP (optional) -->
+                            <reflowLongStrings>true</reflowLongStrings> <!-- optional -->
+                            <formatJavadoc>false</formatJavadoc>        <!-- optional -->
+                            <!-- optional: custom group artifact (you probably don't need this) -->
+                        </googleJavaFormat> <!-- has its own section below -->
+
+                        <trimTrailingWhitespace/>
+                        <endWithNewline/>
+
+                        <importOrder /> <!-- standard import order -->
+
+                        <removeUnusedImports /> <!-- self-explanatory -->
+
+                        <formatAnnotations />  <!-- fixes formatting of type annotations, see below -->
+
+                    </java>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>${spotless.goal}</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--<plugin>
+                <groupId>com.rudikershaw.gitbuildhook</groupId>
+                <artifactId>git-build-hook-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <installHooks>
+                        <pre-commit>pre-commit</pre-commit>
+                    </installHooks>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>install</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>-->
         </plugins>
     </build>
 
